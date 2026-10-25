@@ -2114,8 +2114,9 @@ button {
 
 .capability-sketch--visibility .capability-sketch__market-item {
   flex: 1;
+  align-items: center;
   min-height: clamp(38px, 4.6vw, 48px);
-  padding: clamp(10px, 1.15vw, 13px) 10px;
+  padding: clamp(7px, 0.95vw, 9px) 10px;
 }
 
 .capability-sketch--version .capability-sketch__timeline {
@@ -2232,9 +2233,11 @@ button {
   background: #fff;
 }
 
-.capability-sketch__checks li span {
-  color: #5f6f61;
-  font-size: clamp(8px, 0.95vw, 10px);
+.capability-sketch__checks li > strong,
+.capability-sketch__market-copy > strong {
+  color: #3d4f40;
+  font-size: clamp(9px, 1vw, 11px);
+  font-weight: 600;
 }
 
 .capability-sketch__checks li em {
@@ -2304,11 +2307,6 @@ button {
   gap: 3px;
 }
 
-.capability-sketch__market-copy strong {
-  color: #3d4f40;
-  font-size: clamp(9px, 1vw, 11px);
-}
-
 .capability-sketch__market-visibility {
   color: #9ca8a0;
   font-size: clamp(7px, 0.82vw, 8px);
@@ -2325,10 +2323,6 @@ button {
 .capability-sketch__market-badge--live {
   background: #e5f1db;
   color: #518c4e;
-}
-
-.capability-sketch__market-item--pending {
-  opacity: 0.88;
 }
 
 .capability-sketch__market-badge--review {

@@ -785,15 +785,15 @@ function SkillCapabilitySketch({ variant }) {
         <div className="capability-sketch__review-stack">
           <ul className="capability-sketch__checks">
             <li className="capability-sketch__checks-ok">
-              <span>格式</span>
+              <strong>格式</strong>
               <em>通过</em>
             </li>
             <li className="capability-sketch__checks-ok">
-              <span>质量</span>
+              <strong>质量</strong>
               <em>86/100</em>
             </li>
             <li className="capability-sketch__checks-warn">
-              <span>安全</span>
+              <strong>安全</strong>
               <em>2 项安全风险</em>
             </li>
           </ul>
