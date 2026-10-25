@@ -40,24 +40,53 @@ const productPreviewImages = {
     cardFile: 'public/images/products/skillnavigator-card.webp',
     heroSlides: [
       {
+        id: 'home',
         src: '/images/products/skillnavigator-hero.webp',
         alt: 'SkillNavigator 首页示例图',
       },
       {
+        id: 'skills',
         src: '/images/products/skills-marketplace.webp',
-        alt: 'SkillNavigator 公开 Skill 市场示例图',
+        alt: 'SkillNavigator Skills 示例图',
+        copy: {
+          headline: '让合适的 Skill，',
+          highlight: '在需要时被找到。',
+          intro:
+            '按领域、名称、发布者或使用场景浏览已发布的 Skill；评分、下载量和安全状态集中呈现，复用前先看清楚。',
+        },
       },
       {
+        id: 'creators',
         src: '/images/products/creators.webp',
         alt: 'SkillNavigator 创作者示例图',
+        copy: {
+          headline: '让每一份 Skill，',
+          highlight: '都有来处可查。',
+          intro:
+            '发布者的代表 Skill、发布数量和下载表现集中呈现。认识贡献者，也能了解一份能力从谁而来。',
+        },
       },
       {
+        id: 'leaderboard',
         src: '/images/products/leaderboard.webp',
         alt: 'SkillNavigator 榜单示例图',
+        copy: {
+          headline: '让 Skill 的表现，',
+          highlight: '一目了然。',
+          intro:
+            '按下载次数、用户评分或最近更新时间排序。把热度、反馈与活跃度放在同一处，选择更有依据。',
+        },
       },
       {
+        id: 'inspections',
         src: '/images/products/inspections.webp',
-        alt: 'SkillNavigator 审查示例图',
+        alt: 'SkillNavigator 审查中心示例图',
+        copy: {
+          headline: '让每一次发布，',
+          highlight: '都有依据可查。',
+          intro:
+            '汇总每个 Skill 最新版本的发布时间、安全与质量评分；按需要排序并导出，最新发布状态随时可核对。',
+        },
       },
     ],
   },
@@ -482,7 +511,7 @@ function SectionLabel({ children }) {
   )
 }
 
-function ProductPreview({ type, variant = 'card' }) {
+function ProductPreview({ type, variant = 'card', onSlideChange }) {
   const preview = productPreviewImages[type]
   const src = variant === 'hero' ? preview.heroSrc : preview.cardSrc
   const resolvedSrc = publicAsset(src)
@@ -490,7 +519,13 @@ function ProductPreview({ type, variant = 'card' }) {
   const [loadError, setLoadError] = useState(false)
 
   if (variant === 'hero' && preview.heroSlides?.length > 1) {
-    return <ProductPreviewCarousel type={type} slides={preview.heroSlides} />
+    return (
+      <ProductPreviewCarousel
+        type={type}
+        slides={preview.heroSlides}
+        onSlideChange={onSlideChange}
+      />
+    )
   }
 
   if (resolvedSrc && !loadError) {
@@ -529,7 +564,7 @@ function ProductPreview({ type, variant = 'card' }) {
   return <ProductSketch type={type} />
 }
 
-function ProductPreviewCarousel({ type, slides: configuredSlides }) {
+function ProductPreviewCarousel({ type, slides: configuredSlides, onSlideChange }) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [unavailableSources, setUnavailableSources] = useState([])
   const [loadedSources, setLoadedSources] = useState(() => new Set())
@@ -562,7 +597,9 @@ function ProductPreviewCarousel({ type, slides: configuredSlides }) {
     ({ depth }) => depth === 0 || foregroundReady,
   )
   const changeSlide = (direction) => {
-    setActiveIndex((index) => (index + direction + slideCount) % slideCount)
+    const nextIndex = (currentIndex + direction + slideCount) % slideCount
+    setActiveIndex(nextIndex)
+    onSlideChange?.(slides[nextIndex])
   }
 
   const markSlideLoaded = (src) => {
@@ -582,10 +619,18 @@ function ProductPreviewCarousel({ type, slides: configuredSlides }) {
   }
 
   const handleImageError = (src) => {
+    const fallbackSlide = configuredSlides.find(
+      (slide) =>
+        slide.kind === 'sketch' ||
+        (slide.src && slide.src !== src && !unavailableSources.includes(slide.src)),
+    )
     setUnavailableSources((sources) =>
       sources.includes(src) ? sources : [...sources, src],
     )
     setActiveIndex(0)
+    if (fallbackSlide) {
+      onSlideChange?.(fallbackSlide)
+    }
   }
 
   return (
@@ -667,9 +712,6 @@ function SkillCapabilitySketch({ variant }) {
     return (
       <div className="capability-sketch capability-sketch--visibility" aria-hidden="true">
         <div className="capability-sketch__bar">
-          <span />
-          <span />
-          <span />
           <b>Skill 广场</b>
         </div>
         <div className="capability-sketch__body">
@@ -712,9 +754,6 @@ function SkillCapabilitySketch({ variant }) {
     return (
       <div className="capability-sketch capability-sketch--version" aria-hidden="true">
         <div className="capability-sketch__bar">
-          <span />
-          <span />
-          <span />
           <b>版本历史</b>
         </div>
         <div className="capability-sketch__body">
@@ -767,9 +806,6 @@ function SkillCapabilitySketch({ variant }) {
   return (
     <div className="capability-sketch capability-sketch--inspection" aria-hidden="true">
       <div className="capability-sketch__bar">
-        <span />
-        <span />
-        <span />
         <b>发布前审查</b>
       </div>
       <div className="capability-sketch__body">
@@ -1362,6 +1398,19 @@ function HomePage({ navigate }) {
 
 function ProductDetailPage({ product }) {
   const detail = productDetails[product.type]
+  const isSkillProduct = product.type === 'skill'
+  const [activeSkillSlideId, setActiveSkillSlideId] = useState('home')
+  const activeSkillSlide = productPreviewImages.skill.heroSlides.find(
+    (slide) => slide.id === activeSkillSlideId,
+  )
+  const heroCopy =
+    isSkillProduct && activeSkillSlide?.copy
+      ? activeSkillSlide.copy
+      : detail
+
+  useEffect(() => {
+    setActiveSkillSlideId('home')
+  }, [product.type])
 
   return (
     <main className={`product-page product-page--${product.type}`}>
@@ -1376,16 +1425,33 @@ function ProductDetailPage({ product }) {
             </div>
           )}
           <div className="product-page-hero__grid">
-            <div className="product-page-hero__copy">
-              {product.type !== 'skill' && <SectionLabel>{product.category}</SectionLabel>}
+            <div
+              className={`product-page-hero__copy${
+                isSkillProduct ? ' product-page-hero__copy--synced' : ''
+              }`}
+            >
+              {!isSkillProduct && <SectionLabel>{product.category}</SectionLabel>}
               <h1>
-                {detail.headline}
-                <span>{detail.highlight}</span>
+                {heroCopy.headline}
+                <span>{heroCopy.highlight}</span>
               </h1>
-              <p>{detail.intro}</p>
+              <p>{heroCopy.intro}</p>
+              {isSkillProduct && activeSkillSlide?.copy && (
+                <p className="product-page-hero__copy-measure" aria-hidden="true">
+                  {detail.intro}
+                </p>
+              )}
             </div>
-            {product.type === 'skill' ? (
-              <ProductPreview type={product.type} variant="hero" />
+            {isSkillProduct ? (
+              <ProductPreview
+                type={product.type}
+                variant="hero"
+                onSlideChange={(slide) => {
+                  if (slide?.id) {
+                    setActiveSkillSlideId(slide.id)
+                  }
+                }}
+              />
             ) : (
               <div className="product-page-hero__visual">
                 <ProductPreview type={product.type} variant="hero" />

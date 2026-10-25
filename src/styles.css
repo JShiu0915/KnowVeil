@@ -1801,6 +1801,33 @@ button {
   line-height: 1.85;
 }
 
+.product-page-hero__copy-measure {
+  display: none;
+}
+
+@media (min-width: 721px) {
+  .product-page--skill .product-page-hero__copy--synced {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-page--skill .product-page-hero__copy--synced h1 {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .product-page--skill .product-page-hero__copy--synced > p {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .product-page--skill .product-page-hero__copy--synced .product-page-hero__copy-measure {
+    display: block;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
 .product-page-hero__actions {
   display: flex;
   align-items: center;
@@ -2141,35 +2168,20 @@ button {
 }
 
 .capability-sketch__bar {
-  position: relative;
   display: flex;
   height: clamp(26px, 3.2vw, 32px);
   flex-shrink: 0;
   align-items: center;
-  gap: 3px;
+  justify-content: center;
   padding: 0 10px;
   border-bottom: 1px solid #dbe4da;
   background: #fff;
 }
 
-.capability-sketch__bar > span {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #d2ded0;
-}
-
-.capability-sketch__bar > span:first-child {
-  background: #71ba78;
-}
-
 .capability-sketch__bar b {
-  position: absolute;
-  left: 50%;
   color: #4a5c4e;
   font-size: clamp(8px, 0.98vw, 11px);
   font-weight: 560;
-  transform: translateX(-50%);
 }
 
 .capability-sketch__body {
