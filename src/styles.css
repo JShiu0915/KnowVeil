@@ -862,6 +862,7 @@ button {
     0 12px 28px rgba(28, 48, 35, 0.08),
     0 3px 8px rgba(28, 48, 35, 0.05);
   transform-origin: left center;
+  /* 与 Skill 产品页 hero 文案切换总时长（360ms）对齐 */
   transition: transform 360ms ease, opacity 260ms ease;
 }
 
@@ -1745,6 +1746,14 @@ button {
 
 .product-page--skill .product-page-hero__grid {
   gap: clamp(64px, 10vw, 168px);
+  align-items: start;
+}
+
+@media (min-width: 721px) {
+  .product-page--skill .product-page-hero__copy {
+    margin-top: calc(390px / 2);
+    transform: translateY(-50%);
+  }
 }
 
 .product-page--skill .product-page-notes {
@@ -1803,6 +1812,26 @@ button {
 
 .product-page-hero__copy-measure {
   display: none;
+}
+
+.product-page--skill .product-page-hero__copy--synced h1,
+.product-page--skill .product-page-hero__copy--synced > p:not(.product-page-hero__copy-measure) {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.product-page--skill .product-page-hero__copy--synced.product-page-hero__copy--visible h1,
+.product-page--skill
+  .product-page-hero__copy--synced.product-page-hero__copy--visible
+  > p:not(.product-page-hero__copy-measure) {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-page--skill .product-page-hero__copy--synced h1,
+  .product-page--skill .product-page-hero__copy--synced > p:not(.product-page-hero__copy-measure) {
+    transition: none;
+  }
 }
 
 @media (min-width: 721px) {
@@ -3328,6 +3357,8 @@ button {
 
   .product-page--skill .product-page-hero__copy {
     padding-left: 28px;
+    margin-top: 0;
+    transform: none;
   }
 
   .product-page-hero__visual {

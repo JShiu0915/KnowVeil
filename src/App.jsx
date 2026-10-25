@@ -99,6 +99,10 @@ const productPreviewImages = {
   },
 }
 
+/** 与 .product-preview__carousel-slide 的 transform 过渡一致 */
+const SKILL_HERO_CAROUSEL_TRANSITION_MS = 360
+const SKILL_HERO_COPY_SWAP_MS = SKILL_HERO_CAROUSEL_TRANSITION_MS / 2
+
 const productDetails = {
   skill: {
     headline: '让 AI 产出的能力，',
@@ -1407,10 +1411,47 @@ function ProductDetailPage({ product }) {
     isSkillProduct && activeSkillSlide?.copy
       ? activeSkillSlide.copy
       : detail
+  const [displayCopy, setDisplayCopy] = useState(detail)
+  const [copyVisible, setCopyVisible] = useState(true)
+  const skipSkillCopyFadeRef = useRef(true)
+  const visibleCopy = isSkillProduct ? displayCopy : detail
 
   useEffect(() => {
     setActiveSkillSlideId('home')
+    skipSkillCopyFadeRef.current = true
+    setDisplayCopy(productDetails[product.type])
+    setCopyVisible(true)
   }, [product.type])
+
+  useEffect(() => {
+    if (!isSkillProduct) {
+      return undefined
+    }
+
+    if (skipSkillCopyFadeRef.current) {
+      skipSkillCopyFadeRef.current = false
+      setDisplayCopy(heroCopy)
+      setCopyVisible(true)
+      return undefined
+    }
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reducedMotion) {
+      setDisplayCopy(heroCopy)
+      setCopyVisible(true)
+      return undefined
+    }
+
+    setCopyVisible(false)
+    const timeoutId = window.setTimeout(() => {
+      setDisplayCopy(heroCopy)
+      window.requestAnimationFrame(() => {
+        setCopyVisible(true)
+      })
+    }, SKILL_HERO_COPY_SWAP_MS)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [activeSkillSlideId, heroCopy, isSkillProduct])
 
   return (
     <main className={`product-page product-page--${product.type}`}>
@@ -1428,15 +1469,15 @@ function ProductDetailPage({ product }) {
             <div
               className={`product-page-hero__copy${
                 isSkillProduct ? ' product-page-hero__copy--synced' : ''
-              }`}
+              }${isSkillProduct && copyVisible ? ' product-page-hero__copy--visible' : ''}`}
             >
               {!isSkillProduct && <SectionLabel>{product.category}</SectionLabel>}
               <h1>
-                {heroCopy.headline}
-                <span>{heroCopy.highlight}</span>
+                {visibleCopy.headline}
+                <span>{visibleCopy.highlight}</span>
               </h1>
-              <p>{heroCopy.intro}</p>
-              {isSkillProduct && activeSkillSlide?.copy && (
+              <p>{visibleCopy.intro}</p>
+              {isSkillProduct && (
                 <p className="product-page-hero__copy-measure" aria-hidden="true">
                   {detail.intro}
                 </p>
