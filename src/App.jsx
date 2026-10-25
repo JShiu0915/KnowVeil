@@ -331,6 +331,46 @@ function LucideBarChart3({ size = 14 }) {
   )
 }
 
+function SkillHeroNoteIcon({ variant, size = 34 }) {
+  const iconSize = variant === 'offline' ? Math.min(size, 30) : size
+  const svgProps = {
+    'aria-hidden': true,
+    width: iconSize,
+    height: iconSize,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: '1.55',
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+  }
+
+  if (variant === 'offline') {
+    return (
+      <svg {...svgProps}>
+        <path d="M2.25 15C2.25 17.4853 4.26472 19.5 6.75 19.5H18C20.0711 19.5 21.75 17.8211 21.75 15.75C21.75 14.1479 20.7453 12.7805 19.3316 12.2433C19.4407 11.9324 19.5 11.5981 19.5 11.25C19.5 9.59315 18.1569 8.25 16.5 8.25C16.1767 8.25 15.8654 8.30113 15.5737 8.39575C14.9765 6.1526 12.9312 4.5 10.5 4.5C7.6005 4.5 5.25 6.85051 5.25 9.75C5.25 10.0832 5.28105 10.4092 5.3404 10.7252C3.54555 11.3167 2.25 13.0071 2.25 15Z" />
+        <path d="m3 3 18 18" />
+      </svg>
+    )
+  }
+
+  if (variant === 'gate') {
+    return (
+      <svg {...svgProps}>
+        <path d="M12 3 19 6v5c0 4.5-2.8 7.8-7 10-4.2-2.2-7-5.5-7-10V6z" />
+        <path d="m8.8 12 2.1 2.1 4.4-4.4" />
+      </svg>
+    )
+  }
+
+  return (
+    <svg {...svgProps}>
+      <path d="M2.5 12s3.6-6 9.5-6 9.5 6 9.5 6-3.6 6-9.5 6-9.5-6-9.5-6Z" />
+      <circle cx="12" cy="12" r="2.8" />
+    </svg>
+  )
+}
+
 function MenuIcon({ open }) {
   return (
     <svg
@@ -1503,8 +1543,19 @@ function ProductDetailPage({ product }) {
             {detail.notes.map(([title, text], index) => (
               <div key={title}>
                 <span>0{index + 1}</span>
-                <strong>{title}</strong>
-                <p>{text}</p>
+                <div className="product-page-note__main">
+                  <div className="product-page-note__copy">
+                    <strong>{title}</strong>
+                    <p>{text}</p>
+                  </div>
+                  {isSkillProduct && (
+                    <span className="product-page-note__icon">
+                      <SkillHeroNoteIcon
+                        variant={['inspect', 'offline', 'gate'][index]}
+                      />
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>
