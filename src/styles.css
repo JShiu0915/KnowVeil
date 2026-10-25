@@ -1744,6 +1744,10 @@ button {
   margin-bottom: clamp(34px, 4.6vw, 58px);
 }
 
+.product-page--skill .product-page-hero {
+  border-bottom: 0;
+}
+
 .product-page--skill .product-page-hero__grid {
   gap: clamp(24px, 4vw, 56px);
   align-items: start;
