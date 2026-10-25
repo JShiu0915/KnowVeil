@@ -277,6 +277,27 @@ function CarouselArrow({ direction }) {
   )
 }
 
+function LucideBarChart3({ size = 14 }) {
+  return (
+    <svg
+      aria-hidden="true"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+      <path d="M18 17V9" />
+      <path d="M13 17V5" />
+      <path d="M8 17v-3" />
+    </svg>
+  )
+}
+
 function MenuIcon({ open }) {
   return (
     <svg
@@ -699,7 +720,9 @@ function SkillCapabilitySketch({ variant }) {
         <div className="capability-sketch__body">
           <div className="capability-sketch__version-head">
             <strong>售后助手 Skill</strong>
-            <span>当前 v1.2</span>
+            <div className="capability-sketch__verdict capability-sketch__verdict--head">
+              <strong>当前 v1.2</strong>
+            </div>
           </div>
           <ul className="capability-sketch__timeline">
             <li>
@@ -751,7 +774,9 @@ function SkillCapabilitySketch({ variant }) {
       </div>
       <div className="capability-sketch__body">
         <div className="capability-sketch__file">
-          <i>⌁</i>
+          <span className="capability-sketch__file-icon" aria-hidden="true">
+            <LucideBarChart3 size={12} />
+          </span>
           <div>
             <strong>contract-review-skill</strong>
             <small>上传完成 · 仅静态扫描，不运行代码</small>

@@ -2188,7 +2188,7 @@ button {
   background: #fff;
 }
 
-.capability-sketch__file > i {
+.capability-sketch__file-icon {
   display: grid;
   width: 22px;
   height: 22px;
@@ -2197,8 +2197,6 @@ button {
   border-radius: 5px;
   background: #e5f1db;
   color: #518c4e;
-  font-size: 12px;
-  font-style: normal;
 }
 
 .capability-sketch__file strong {
@@ -2362,17 +2360,26 @@ button {
   gap: 8px;
 }
 
-.capability-sketch__version-head strong {
+.capability-sketch__version-head > strong {
   color: #314634;
   font-size: clamp(10px, 1.12vw, 12px);
 }
 
-.capability-sketch__version-head > span {
-  padding: 4px 6px;
-  border-radius: 4px;
-  background: #c8dcc4;
-  color: #2f4a35;
-  font-size: clamp(8px, 0.88vw, 9px);
+.capability-sketch--version .capability-sketch__verdict--head {
+  margin-top: 0;
+  flex-shrink: 0;
+  padding: 6px 8px;
+  border: 1px solid #dfe8d9;
+  border-radius: 6px;
+  background: #f6fbf1;
+}
+
+.capability-sketch--version .capability-sketch__verdict--head strong {
+  display: block;
+  margin: 0;
+  color: #3f5a42;
+  font-size: clamp(9px, 1vw, 11px);
+  font-weight: 700;
 }
 
 .capability-sketch__timeline {
