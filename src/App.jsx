@@ -79,18 +79,21 @@ const productDetails = {
     capabilities: [
       {
         number: '01',
-        title: '发布前检查，而不是上传即上架',
-        text: '格式、安全与查毒多道检查一次完成，给出具体问题清单与结论，而不是一句「通过」。',
+        title: '发布前审查，而不是上传即上架',
+        text: '格式、质量与安全多道检查一次完成，给出具体问题清单与结论，而不只是一句「通过」。',
+        sketch: 'inspection',
       },
       {
         number: '02',
         title: '结论决定能不能被看到',
-        text: '有高危问题的能力直接拒绝；被拒绝、检查中、检查中断的，一律不出现在公开结果里。',
+        text: '有高危安全风险的能力直接拒绝；被拒绝、审查中、审查中断的 Skill，一律不出现在公开检索结果里。',
+        sketch: 'visibility',
       },
       {
         number: '03',
         title: '发出去之后不能偷改',
-        text: '一个版本发布出去就是那一份；要改只能发新版本，谁在用什么版本始终清楚。',
+        text: '一个版本发布出去就是那一份；要改只能发新版本，每个版本的修改内容始终清楚。',
+        sketch: 'version',
       },
     ],
     steps: ['上传能力包', '发布前检查', '按结论决定是否公开', '按版本分发'],
@@ -633,6 +636,147 @@ function ProductPreviewCarousel({ type, slides: configuredSlides }) {
         >
           <CarouselArrow direction="next" />
         </button>
+      </div>
+    </div>
+  )
+}
+
+function SkillCapabilitySketch({ variant }) {
+  if (variant === 'visibility') {
+    return (
+      <div className="capability-sketch capability-sketch--visibility" aria-hidden="true">
+        <div className="capability-sketch__bar">
+          <span />
+          <span />
+          <span />
+          <b>Skill 广场</b>
+        </div>
+        <div className="capability-sketch__body">
+          <div className="capability-sketch__search">⌕ 搜索已发布的Skill</div>
+          <div className="capability-sketch__market">
+            <div className="capability-sketch__market-item capability-sketch__market-item--live">
+              <div className="capability-sketch__market-copy">
+                <strong>经营日报</strong>
+                <span className="capability-sketch__market-visibility">其他成员可在 Skill 广场检索到</span>
+              </div>
+              <small className="capability-sketch__market-badge capability-sketch__market-badge--live">
+                已发布
+              </small>
+            </div>
+            <div className="capability-sketch__market-item capability-sketch__market-item--pending">
+              <div className="capability-sketch__market-copy">
+                <strong>方案生成</strong>
+                <span className="capability-sketch__market-visibility">审查完成前，其他人检索不到</span>
+              </div>
+              <small className="capability-sketch__market-badge capability-sketch__market-badge--review">
+                审查中
+              </small>
+            </div>
+            <div className="capability-sketch__market-item capability-sketch__market-item--hidden">
+              <div className="capability-sketch__market-copy">
+                <strong>合同审查</strong>
+                <span className="capability-sketch__market-visibility">未通过审查，不在公开检索结果中</span>
+              </div>
+              <small className="capability-sketch__market-badge capability-sketch__market-badge--hidden">
+                已拒绝
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (variant === 'version') {
+    return (
+      <div className="capability-sketch capability-sketch--version" aria-hidden="true">
+        <div className="capability-sketch__bar">
+          <span />
+          <span />
+          <span />
+          <b>版本历史</b>
+        </div>
+        <div className="capability-sketch__body">
+          <div className="capability-sketch__version-head">
+            <strong>售后助手 Skill</strong>
+            <span>当前 v1.2</span>
+          </div>
+          <ul className="capability-sketch__timeline">
+            <li>
+              <em>v1.2</em>
+              <div>
+                <strong>优化处理流程</strong>
+                <small>2026-04-02 · 96/100 · 0 项安全风险</small>
+              </div>
+              <div className="capability-sketch__timeline-badges">
+                <i className="capability-sketch__timeline-latest">最新</i>
+                <small className="capability-sketch__market-badge capability-sketch__market-badge--live">
+                  已发布
+                </small>
+              </div>
+            </li>
+            <li>
+              <em>v1.1</em>
+              <div>
+                <strong>修复已知安全风险</strong>
+                <small>2026-03-12 · 86/100 · 0 项安全风险</small>
+              </div>
+              <small className="capability-sketch__market-badge capability-sketch__market-badge--pending">
+                需复核
+              </small>
+            </li>
+            <li>
+              <em>v1.0</em>
+              <div>
+                <strong>初次发布</strong>
+                <small>2026-02-08 · 86/100 · 2 项安全风险</small>
+              </div>
+              <small className="capability-sketch__market-badge capability-sketch__market-badge--hidden">
+                已拒绝
+              </small>
+            </li>
+          </ul>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="capability-sketch capability-sketch--inspection" aria-hidden="true">
+      <div className="capability-sketch__bar">
+        <span />
+        <span />
+        <span />
+        <b>发布前审查</b>
+      </div>
+      <div className="capability-sketch__body">
+        <div className="capability-sketch__file">
+          <i>⌁</i>
+          <div>
+            <strong>contract-review-skill</strong>
+            <small>上传完成 · 仅静态扫描，不运行代码</small>
+          </div>
+        </div>
+        <div className="capability-sketch__review-stack">
+          <ul className="capability-sketch__checks">
+            <li className="capability-sketch__checks-ok">
+              <span>格式</span>
+              <em>通过</em>
+            </li>
+            <li className="capability-sketch__checks-ok">
+              <span>质量</span>
+              <em>86/100</em>
+            </li>
+            <li className="capability-sketch__checks-warn">
+              <span>安全</span>
+              <em>2 项安全风险</em>
+            </li>
+          </ul>
+          <div className="capability-sketch__verdict">
+            <strong>结论：需修改后发布</strong>
+            <p>问题清单已列出，处理后可再次提交</p>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -1243,14 +1387,35 @@ function ProductDetailPage({ product }) {
             <span>企业私有 AI 的一块基石。</span>
           </h2>
         </div>
-        <div className="product-detail-capability-grid">
-          {detail.capabilities.map((capability) => (
-            <article key={capability.number}>
-              <span>{capability.number}</span>
-              <h3>{capability.title}</h3>
-              <p>{capability.text}</p>
-            </article>
-          ))}
+        <div
+          className={
+            product.type === 'skill'
+              ? 'product-detail-capability-grid product-detail-capability-grid--cards'
+              : 'product-detail-capability-grid'
+          }
+        >
+          {detail.capabilities.map((capability) =>
+            product.type === 'skill' ? (
+              <article key={capability.number} className="product-detail-capability-card">
+                <div className="product-detail-capability-card__copy">
+                  <span>{capability.number}</span>
+                  <h3>{capability.title}</h3>
+                  <p>{capability.text}</p>
+                </div>
+                <div
+                  className={`product-detail-capability-card__media product-detail-capability-card__media--sketch product-detail-capability-card__media--${capability.sketch}`}
+                >
+                  <SkillCapabilitySketch variant={capability.sketch} />
+                </div>
+              </article>
+            ) : (
+              <article key={capability.number}>
+                <span>{capability.number}</span>
+                <h3>{capability.title}</h3>
+                <p>{capability.text}</p>
+              </article>
+            ),
+          )}
         </div>
       </section>
 
