@@ -1883,10 +1883,6 @@ function ProductDetailPage({ product }) {
                 </h2>
                 <p>每一次提交，都有一条看得见的发布路径。</p>
               </div>
-              <div className="skill-workflow__meta" aria-hidden="true">
-                <span>发布路径</span>
-                <span>01 — 04</span>
-              </div>
             </div>
 
             <div className="skill-workflow">

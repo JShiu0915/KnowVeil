@@ -2715,24 +2715,6 @@ button {
   line-height: 1.8;
 }
 
-.skill-workflow__meta {
-  display: grid;
-  min-width: 186px;
-  grid-template-columns: 1fr auto;
-  gap: 18px;
-  padding: 13px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-  color: #a8aca1;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-}
-
-.skill-workflow__meta span:last-child {
-  color: #bcf687;
-}
-
 .skill-workflow {
   margin-top: clamp(48px, 6vw, 76px);
 }
@@ -5152,11 +5134,6 @@ button {
   .product-workflow--skill .product-workflow__intro > p {
     max-width: 350px;
     font-size: 13px;
-  }
-
-  .skill-workflow__meta {
-    width: min(100%, 260px);
-    margin-top: 34px;
   }
 
   .skill-workflow {
