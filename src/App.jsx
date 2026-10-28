@@ -1897,10 +1897,14 @@ function ProductDetailPage({ product }) {
                         <span className="skill-workflow__icon">
                           <SkillWorkflowStepIcon variant={step.icon} />
                         </span>
-                        <span className="skill-workflow__number">0{index + 1}</span>
+                        <div className="skill-workflow__card-heading">
+                          <strong>{step.title}</strong>
+                          <div className="skill-workflow__card-meta">
+                            <span className="skill-workflow__phase">{step.phase}</span>
+                            <span className="skill-workflow__number">0{index + 1}</span>
+                          </div>
+                        </div>
                       </div>
-                      <span className="skill-workflow__phase">{step.phase}</span>
-                      <strong>{step.title}</strong>
                       <p>{step.text}</p>
                       <SkillWorkflowDemo variant={step.icon} />
                     </article>

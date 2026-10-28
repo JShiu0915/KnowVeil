@@ -2779,12 +2779,13 @@ button {
 
 .skill-workflow__card-top {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
 }
 
 .skill-workflow__icon {
   display: grid;
+  flex-shrink: 0;
   width: 52px;
   height: 52px;
   place-items: center;
@@ -2794,16 +2795,30 @@ button {
   color: #bcf687;
 }
 
+.skill-workflow__card-heading {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 7px;
+  padding-top: 4px;
+}
+
+.skill-workflow__card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
 .skill-workflow__number {
   color: #898e84;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.08em;
+  line-height: 1;
 }
 
 .skill-workflow__phase {
-  align-self: flex-start;
-  margin-top: 24px;
   padding: 4px 7px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 999px;
@@ -2814,7 +2829,6 @@ button {
 }
 
 .product-workflow--skill .skill-workflow__card strong {
-  margin-top: 13px;
   color: #f5f5ef;
   font-size: clamp(15px, 1.45vw, 19px);
   font-weight: 580;
@@ -2823,7 +2837,7 @@ button {
 }
 
 .product-workflow--skill .skill-workflow__card p {
-  margin: 8px 0 0;
+  margin: 14px 0 0;
   color: #adb1a7;
   font-size: 12px;
   line-height: 1.65;
@@ -5149,10 +5163,6 @@ button {
   .skill-workflow__card {
     min-height: 0;
     padding: 20px;
-  }
-
-  .skill-workflow__phase {
-    margin-top: 20px;
   }
 
   .product-page-cta {
