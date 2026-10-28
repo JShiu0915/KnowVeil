@@ -1745,7 +1745,17 @@ button {
 }
 
 .product-page--skill .product-page-hero {
+  min-height: auto;
+  padding-bottom: clamp(28px, 3.5vw, 44px);
   border-bottom: 0;
+}
+
+.product-page--skill .product-page-hero__inner {
+  flex: 0 1 auto;
+}
+
+.product-page--skill .product-detail-capabilities {
+  padding-top: clamp(52px, 6.5vw, 84px);
 }
 
 .product-page--skill .product-page-hero__grid {
@@ -3670,6 +3680,10 @@ button {
   .product-detail-capabilities {
     width: calc(100% - 32px);
     padding: 82px 0;
+  }
+
+  .product-page--skill .product-detail-capabilities {
+    padding-top: 44px;
   }
 
   .product-page-cta h2,
