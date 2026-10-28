@@ -1935,14 +1935,102 @@ function ProductDetailPage({ product }) {
         )}
       </section>
 
-      <section className="product-page-cta">
-        <p>{product.name.toUpperCase()} FOR PRIVATE AI</p>
-        <h2>从一个真实场景，开始您的企业 AI 路径。</h2>
-        <a className="button button--dark" href={`mailto:${BRAND.email}?subject=KnowVeil%20产品咨询`}>
-          与 KnowVeil 团队沟通
-          <Arrow />
-        </a>
-      </section>
+      {isSkillProduct ? (
+        <section className="product-page-cta product-page-cta--skill">
+          <div className="skill-product-cta">
+            <div className="skill-product-cta__content">
+              <p className="skill-product-cta__eyebrow">
+                <span />
+                {product.name.toUpperCase()} FOR PRIVATE AI
+              </p>
+              <h2>
+                让每一次能力发布，
+                <span>都有据可查。</span>
+              </h2>
+              <p className="skill-product-cta__copy">
+                从一个真实场景开始，和 {BRAND.name} 团队一起讨论适合企业的 AI 能力方案。
+              </p>
+              <a
+                className="button button--dark"
+                href={`mailto:${BRAND.email}?subject=${encodeURIComponent(`${product.name} 产品咨询`)}`}
+              >
+                与 {BRAND.name} 团队沟通
+                <Arrow />
+              </a>
+            </div>
+
+            <div className="skill-product-cta__art" aria-hidden="true">
+              <span className="skill-product-cta__glow" />
+              <span className="skill-product-cta__orbit skill-product-cta__orbit--one" />
+              <span className="skill-product-cta__orbit skill-product-cta__orbit--two" />
+              <svg
+                className="skill-product-cta__route"
+                viewBox="0 0 480 340"
+                fill="none"
+                preserveAspectRatio="none"
+              >
+                <path d="M105 118h95c27 0 44 18 44 45v17c0 22 14 37 37 37h104" />
+                <path d="M105 118h95c27 0 44 18 44 45v17c0 22 14 37 37 37h104" />
+                <circle cx="105" cy="118" r="4" />
+                <circle cx="244" cy="180" r="4" />
+                <circle cx="385" cy="217" r="4" />
+              </svg>
+
+              <div className="skill-product-cta__package">
+                <div className="skill-product-cta__package-main">
+                  <span className="skill-product-cta__package-icon">
+                    <SkillPackageIcon size={20} />
+                  </span>
+                  <strong>Skill 包</strong>
+                </div>
+              </div>
+
+              <div className="skill-product-cta__gate">
+                <SkillWorkflowStepIcon variant="gate" size={22} />
+              </div>
+
+              <div className="skill-product-cta__version">
+                <div className="skill-product-cta__version-head">
+                  <strong>v2.0</strong>
+                  <div className="skill-product-cta__version-meta">
+                    <div className="skill-product-cta__version-status">
+                      <span />
+                      已发布
+                    </div>
+                    <small>最新版本</small>
+                  </div>
+                </div>
+              </div>
+
+              <div className="skill-product-cta__network">
+                <span className="skill-product-cta__network-line skill-product-cta__network-line--one" />
+                <span className="skill-product-cta__network-line skill-product-cta__network-line--two" />
+                <span className="skill-product-cta__network-dot skill-product-cta__network-dot--one" />
+                <span className="skill-product-cta__network-dot skill-product-cta__network-dot--two" />
+                <span className="skill-product-cta__network-dot skill-product-cta__network-dot--three" />
+              </div>
+
+              <p className="skill-product-cta__art-meta">
+                <span>01</span>
+                <i />
+                <span>PRIVATE AI</span>
+              </p>
+            </div>
+          </div>
+        </section>
+      ) : (
+        <section className="product-page-cta">
+          <p>{product.name.toUpperCase()} FOR PRIVATE AI</p>
+          <h2>从一个真实场景，开始您的企业 AI 路径。</h2>
+          <a
+            className="button button--dark"
+            href={`mailto:${BRAND.email}?subject=${encodeURIComponent(`${product.name} 产品咨询`)}`}
+          >
+            与 {BRAND.name} 团队沟通
+            <Arrow />
+          </a>
+        </section>
+      )}
     </main>
   )
 }
