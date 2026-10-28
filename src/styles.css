@@ -4598,28 +4598,6 @@ button {
   bottom: 4%;
 }
 
-.skill-product-cta__art-meta {
-  position: absolute;
-  z-index: 2;
-  bottom: 7%;
-  left: 7%;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  color: #7d8a7a;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 8px;
-  letter-spacing: 0.09em;
-  line-height: 1;
-}
-
-.skill-product-cta__art-meta i {
-  width: 13px;
-  height: 1px;
-  background: #8dba7a;
-}
-
 @media (hover: hover) {
   .skill-product-cta__art:hover {
     border-color: rgba(74, 125, 71, 0.32);

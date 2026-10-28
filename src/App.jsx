@@ -2009,12 +2009,6 @@ function ProductDetailPage({ product }) {
                 <span className="skill-product-cta__network-dot skill-product-cta__network-dot--two" />
                 <span className="skill-product-cta__network-dot skill-product-cta__network-dot--three" />
               </div>
-
-              <p className="skill-product-cta__art-meta">
-                <span>01</span>
-                <i />
-                <span>PRIVATE AI</span>
-              </p>
             </div>
           </div>
         </section>
