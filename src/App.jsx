@@ -130,6 +130,32 @@ const productDetails = {
       },
     ],
     steps: ['上传能力包', '发布前检查', '按结论决定是否公开', '按版本分发'],
+    workflowSteps: [
+      {
+        phase: '待检查',
+        title: '上传能力包',
+        text: '提交一份待发布的 Skill。',
+        icon: 'upload',
+      },
+      {
+        phase: '形成结论',
+        title: '发布前检查',
+        text: '查看问题清单与检查结论。',
+        icon: 'inspect',
+      },
+      {
+        phase: '决定准入',
+        title: '按结论决定是否公开',
+        text: '结论决定它能否被公开检索。',
+        icon: 'gate',
+      },
+      {
+        phase: '组织可用',
+        title: '按版本分发',
+        text: '每个已发布版本都清楚可查。',
+        icon: 'distribute',
+      },
+    ],
     notes: [
       ['检查不运行代码', '只看不跑，不碰你的环境'],
       ['不依赖外部模型', '可以完全离线，唯一的外部查毒可关'],
@@ -368,6 +394,242 @@ function SkillHeroNoteIcon({ variant, size = 34 }) {
       <path d="M2.5 12s3.6-6 9.5-6 9.5 6 9.5 6-3.6 6-9.5 6-9.5-6-9.5-6Z" />
       <circle cx="12" cy="12" r="2.8" />
     </svg>
+  )
+}
+
+function SkillWorkflowStepIcon({ variant, size = 25 }) {
+  const svgProps = {
+    'aria-hidden': true,
+    width: size,
+    height: size,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: '1.55',
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+  }
+
+  if (variant === 'upload') {
+    return (
+      <svg {...svgProps}>
+        <path d="M6 3h8l4 4v14H6z" />
+        <path d="M14 3v4h4" />
+        <path d="M12 17V9" />
+        <path d="m9 12 3-3 3 3" />
+      </svg>
+    )
+  }
+
+  if (variant === 'inspect') {
+    return (
+      <svg {...svgProps}>
+        <path d="M6 3h8l4 4v5" />
+        <path d="M14 3v4h4" />
+        <path d="M6 3v18h7" />
+        <circle cx="13.5" cy="15.5" r="3.5" />
+        <path d="m16 18 2.5 2.5" />
+      </svg>
+    )
+  }
+
+  if (variant === 'gate') {
+    return (
+      <svg {...svgProps}>
+        <path d="M5 20V6h14v14" />
+        <path d="M8 10h8" />
+        <path d="m9 15 2 2 4-4" />
+      </svg>
+    )
+  }
+
+  return (
+    <svg {...svgProps}>
+      <circle cx="6" cy="6" r="2" />
+      <circle cx="18" cy="7" r="2" />
+      <circle cx="12" cy="18" r="2" />
+      <path d="m7.7 7.1 3.1 8.1" />
+      <path d="m16.1 8.2-2.9 6.8" />
+      <path d="M8 6.2h8" />
+    </svg>
+  )
+}
+
+function SkillPackageIcon({ size = 17 }) {
+  return (
+    <svg
+      aria-hidden="true"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.55"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m12 3 6.5 3.75v7.5L12 18l-6.5-3.75v-7.5z" />
+      <path d="m5.5 6.75 6.5 3.75 6.5-3.75" />
+      <path d="M12 10.5V18" />
+      <path d="m9.5 8.95 2.5 1.55 2.5-1.55" />
+    </svg>
+  )
+}
+
+function WorkflowCursorIcon({ size = 18 }) {
+  return (
+    <svg
+      aria-hidden="true"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.65"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m5 3 13 8-5.7 1.5L10.8 19z" />
+      <path d="m13 14 4.2 4.2" />
+    </svg>
+  )
+}
+
+function SkillWorkflowDemo({ variant }) {
+  if (variant === 'upload') {
+    return (
+      <div className="skill-workflow-demo skill-workflow-demo--upload" aria-hidden="true">
+        <span className="workflow-demo__upload-stage">
+          <span className="workflow-demo__upload-compose">
+            <span className="workflow-demo__upload-tray">
+              <SkillWorkflowStepIcon variant="upload" size={19} />
+            </span>
+            <span className="workflow-demo__upload-review">
+              <span className="workflow-demo__upload-review-track">
+                <span className="workflow-demo__upload-review-fill" />
+              </span>
+              <span className="workflow-demo__upload-review-result">
+                <span className="workflow-demo__upload-review-label">已提交审查</span>
+                <span className="workflow-demo__upload-review-check">✓</span>
+              </span>
+            </span>
+            <span className="workflow-demo__upload-drag">
+              <span className="workflow-demo__upload-file">
+                <SkillPackageIcon />
+              </span>
+              <span className="workflow-demo__upload-cursor">
+                <WorkflowCursorIcon />
+              </span>
+            </span>
+          </span>
+        </span>
+      </div>
+    )
+  }
+
+  if (variant === 'inspect') {
+    return (
+      <div className="skill-workflow-demo skill-workflow-demo--inspect" aria-hidden="true">
+        <span className="workflow-demo__inspection-skill">
+          <SkillPackageIcon size={15} />
+        </span>
+        <div className="workflow-demo__inspection-stack">
+          <span className="workflow-demo__scan-line" />
+          <span className="workflow-demo__inspection-row workflow-demo__inspection-row--format">
+            <span>格式</span>
+            <span className="workflow-demo__inspection-mark">✓</span>
+          </span>
+          <span className="workflow-demo__inspection-row workflow-demo__inspection-row--quality">
+            <span>质量</span>
+            <span className="workflow-demo__inspection-mark">✓</span>
+          </span>
+          <span className="workflow-demo__inspection-row workflow-demo__inspection-row--security">
+            <span>安全</span>
+            <span className="workflow-demo__inspection-mark">✓</span>
+          </span>
+        </div>
+        <span className="workflow-demo__inspection-result-wrap">
+          <span className="workflow-demo__inspection-result">完成</span>
+        </span>
+      </div>
+    )
+  }
+
+  if (variant === 'gate') {
+    return (
+      <div className="skill-workflow-demo skill-workflow-demo--gate" aria-hidden="true">
+        <span className="workflow-demo__decision-stage">
+          <span className="workflow-demo__decision-compose">
+            <span className="workflow-demo__decision-source">
+              <SkillPackageIcon size={15} />
+            </span>
+            <span className="workflow-demo__decision-track" />
+            <span className="workflow-demo__decision-junction" />
+            <svg
+              className="workflow-demo__decision-branches"
+              viewBox="0 0 30 90"
+              preserveAspectRatio="none"
+            >
+              <path
+                className="workflow-demo__decision-branch workflow-demo__decision-branch--block"
+                d="M 0.5 45.5 H 5 C 13 45.5 14 20.5 30 20.5"
+                pathLength="1"
+              />
+              <path
+                className="workflow-demo__decision-branch workflow-demo__decision-branch--allow"
+                d="M 0.5 45.5 H 5 C 13 45.5 14 69.5 30 69.5"
+                pathLength="1"
+              />
+            </svg>
+            <span className="workflow-demo__decision-outcomes">
+              <span className="workflow-demo__decision-outcome workflow-demo__decision-outcome--block">
+                <span className="workflow-demo__decision-signal">×</span>
+                <span>有问题</span>
+                <span className="workflow-demo__decision-result">不公开</span>
+              </span>
+              <span className="workflow-demo__decision-outcome workflow-demo__decision-outcome--allow">
+                <span className="workflow-demo__decision-signal">✓</span>
+                <span>无问题</span>
+                <span className="workflow-demo__decision-result">公开</span>
+              </span>
+            </span>
+          </span>
+        </span>
+      </div>
+    )
+  }
+
+  return (
+    <div className="skill-workflow-demo skill-workflow-demo--distribute" aria-hidden="true">
+      <span className="workflow-demo__distribute-stage">
+        <span className="workflow-demo__distribute-compose">
+          <span className="workflow-demo__distribute-source">
+            <SkillPackageIcon size={15} />
+          </span>
+          <span className="workflow-demo__distribute-source-track" />
+          <span className="workflow-demo__version-stack">
+            <span className="workflow-demo__version workflow-demo__version--previous">
+              <span>v1.0</span>
+              <small>最新</small>
+            </span>
+            <span className="workflow-demo__version workflow-demo__version--latest">
+              <span>v2.0</span>
+              <small>最新</small>
+            </span>
+          </span>
+          <span className="workflow-demo__distribute-track" />
+          <span className="workflow-demo__distribute-reconnect-track" />
+          <span className="workflow-demo__distribution-target">
+            <span className="workflow-demo__distribution-members">
+              <i className="workflow-demo__distribution-member workflow-demo__distribution-member--one" />
+              <i className="workflow-demo__distribution-member workflow-demo__distribution-member--two" />
+              <i className="workflow-demo__distribution-member workflow-demo__distribution-member--three" />
+            </span>
+            <span className="workflow-demo__distribution-label">已发布</span>
+          </span>
+        </span>
+      </span>
+    </div>
   )
 }
 
@@ -1443,6 +1705,7 @@ function HomePage({ navigate }) {
 function ProductDetailPage({ product }) {
   const detail = productDetails[product.type]
   const isSkillProduct = product.type === 'skill'
+  const skillWorkflowSteps = isSkillProduct ? detail.workflowSteps : []
   const [activeSkillSlideId, setActiveSkillSlideId] = useState('home')
   const activeSkillSlide = productPreviewImages.skill.heroSlides.find(
     (slide) => slide.id === activeSkillSlideId,
@@ -1602,23 +1865,74 @@ function ProductDetailPage({ product }) {
         </div>
       </section>
 
-      <section className="product-workflow">
-        <div className="product-workflow__intro">
-          <SectionLabel>HOW IT WORKS</SectionLabel>
-          <h2>
-            从第一份资料，
-            <span>到第一项可用能力。</span>
-          </h2>
-        </div>
-        <ol>
-          {detail.steps.map((step, index) => (
-            <li key={step}>
-              <span>0{index + 1}</span>
-              <strong>{step}</strong>
-              {index < detail.steps.length - 1 && <i>→</i>}
-            </li>
-          ))}
-        </ol>
+      <section
+        className={
+          isSkillProduct
+            ? 'product-workflow product-workflow--skill'
+            : 'product-workflow'
+        }
+      >
+        {isSkillProduct ? (
+          <div className="product-workflow__inner">
+            <div className="product-workflow__top">
+              <div className="product-workflow__intro">
+                <SectionLabel>HOW IT WORKS</SectionLabel>
+                <h2>
+                  从一份能力包，
+                  <span>到一项可用能力。</span>
+                </h2>
+                <p>每一次提交，都有一条看得见的发布路径。</p>
+              </div>
+              <div className="skill-workflow__meta" aria-hidden="true">
+                <span>发布路径</span>
+                <span>01 — 04</span>
+              </div>
+            </div>
+
+            <div className="skill-workflow">
+              <ol className="skill-workflow__steps">
+                {skillWorkflowSteps.map((step, index) => (
+                  <li
+                    className={`skill-workflow__step skill-workflow__step--${step.icon}`}
+                    key={step.title}
+                  >
+                    <article className="skill-workflow__card">
+                      <div className="skill-workflow__card-top">
+                        <span className="skill-workflow__icon">
+                          <SkillWorkflowStepIcon variant={step.icon} />
+                        </span>
+                        <span className="skill-workflow__number">0{index + 1}</span>
+                      </div>
+                      <span className="skill-workflow__phase">{step.phase}</span>
+                      <strong>{step.title}</strong>
+                      <p>{step.text}</p>
+                      <SkillWorkflowDemo variant={step.icon} />
+                    </article>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="product-workflow__intro">
+              <SectionLabel>HOW IT WORKS</SectionLabel>
+              <h2>
+                从第一份资料，
+                <span>到第一项可用能力。</span>
+              </h2>
+            </div>
+            <ol>
+              {detail.steps.map((step, index) => (
+                <li key={step}>
+                  <span>0{index + 1}</span>
+                  <strong>{step}</strong>
+                  {index < detail.steps.length - 1 && <i>→</i>}
+                </li>
+              ))}
+            </ol>
+          </>
+        )}
       </section>
 
       <section className="product-page-cta">
