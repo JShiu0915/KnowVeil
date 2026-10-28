@@ -129,12 +129,12 @@ const productDetails = {
         sketch: 'version',
       },
     ],
-    steps: ['上传能力包', '发布前检查', '按结论决定是否公开', '按版本分发'],
+    steps: ['上传 Skill 包', '发布前检查', '按结论决定是否公开', '按版本分发'],
     workflowSteps: [
       {
         phase: '待检查',
-        title: '上传能力包',
-        text: '提交一份待发布的 Skill。',
+        title: '上传 Skill 包',
+        text: '提交一个待发布的 Skill。',
         icon: 'upload',
       },
       {
@@ -1878,7 +1878,7 @@ function ProductDetailPage({ product }) {
               <div className="product-workflow__intro">
                 <SectionLabel>HOW IT WORKS</SectionLabel>
                 <h2>
-                  从一份能力包，
+                  从一个 Skill 包，
                   <span>到一项可用能力。</span>
                 </h2>
                 <p>每一次提交，都有一条看得见的发布路径。</p>
