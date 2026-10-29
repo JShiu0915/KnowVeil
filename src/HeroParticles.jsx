@@ -7,17 +7,17 @@ import React, { useEffect, useRef } from 'react'
  * - prefers-reduced-motion 用户只渲染一帧静态图
  * - 配色跟随站点：墨色为主，品牌绿点缀
  */
-const DOT = [24, 24, 24]
+const DOT = [19, 32, 26]
 const ACCENT = [50, 141, 106]
-const LINE = [22, 22, 22]
-const LINK_DIST = 132
+const LINE = [19, 32, 26]
+const LINK_DIST = 128
 
 /* 体积云：预渲染成径向渐变贴图，每帧只做拖动，避免逐帧模糊的开销 */
 const CLOUDS = [
-  { color: ACCENT, radius: 340, alpha: 0.17, fx: 0.2, fy: 0.32, ax: 0.1, ay: 0.08, sx: 0.3, sy: 0.24, phase: 0 },
-  { color: LINE, radius: 430, alpha: 0.13, fx: 0.8, fy: 0.6, ax: 0.11, ay: 0.09, sx: 0.22, sy: 0.19, phase: 2.1 },
-  { color: ACCENT, radius: 250, alpha: 0.15, fx: 0.62, fy: 0.22, ax: 0.1, ay: 0.08, sx: 0.34, sy: 0.26, phase: 4.2 },
-  { color: LINE, radius: 300, alpha: 0.1, fx: 0.34, fy: 0.78, ax: 0.08, ay: 0.1, sx: 0.24, sy: 0.3, phase: 1.2 },
+  { color: ACCENT, radius: 340, alpha: 0.08, fx: 0.2, fy: 0.32, ax: 0.1, ay: 0.08, sx: 0.3, sy: 0.24, phase: 0 },
+  { color: LINE, radius: 430, alpha: 0.04, fx: 0.8, fy: 0.6, ax: 0.11, ay: 0.09, sx: 0.22, sy: 0.19, phase: 2.1 },
+  { color: ACCENT, radius: 250, alpha: 0.07, fx: 0.62, fy: 0.22, ax: 0.1, ay: 0.08, sx: 0.34, sy: 0.26, phase: 4.2 },
+  { color: LINE, radius: 300, alpha: 0.03, fx: 0.34, fy: 0.78, ax: 0.08, ay: 0.1, sx: 0.24, sy: 0.3, phase: 1.2 },
 ]
 
 const makeCloudSprite = (color, radius, alpha) => {
