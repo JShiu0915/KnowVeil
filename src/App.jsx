@@ -1943,7 +1943,9 @@ function HomePage({ navigate }) {
           </p>
         </ScrollReveal>
 
-        <ClientConnectionCanvas />
+        <ScrollReveal revealEarly>
+          <ClientConnectionCanvas />
+        </ScrollReveal>
       </section>
 
       <section className="private-section" id="private-ai" aria-labelledby="private-title">
