@@ -1013,7 +1013,7 @@ function HomePage({ navigate }) {
             <span>知识都不用搬家。</span>
           </h2>
           <p>
-            下面这些 AI 客户端可以直接接入，以及任何支持 MCP 的 AI 客户端。换工具，不用迁移知识。
+            <Phrases text="下面这些 AI 客户端可以直接接入，以及任何支持 MCP 的 AI 客户端。企业自己部署的 AI，也一样接得上。换工具，不用迁移知识。" />
           </p>
         </ScrollReveal>
         <ul className="home-clients__grid">
@@ -1034,10 +1034,7 @@ function HomePage({ navigate }) {
             <span className="home-clients__own-mark" aria-hidden="true">
               +
             </span>
-            <span>
-              <strong>你的企业 AI 客户端</strong>
-              企业自己部署的 AI，也一样接得上
-            </span>
+            你的企业 AI 客户端
           </ScrollReveal>
         </ul>
       </section>
