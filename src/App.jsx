@@ -270,6 +270,27 @@ const sharedPoints = [
   },
 ]
 
+const manifestoAssets = [
+  {
+    number: '01',
+    label: 'KNOWLEDGE',
+    title: '私有知识',
+    text: '放在自己机器上的底账，随时翻得到',
+  },
+  {
+    number: '02',
+    label: 'CAPABILITY',
+    title: 'AI 能力',
+    text: '经审查再分发，版本不可变',
+  },
+  {
+    number: '03',
+    label: 'ASSET',
+    title: '组织资产',
+    text: '模型换代，这两样都还在',
+  },
+]
+
 const aiClients = [
   {
     label: '市面上的 AI 客户端',
@@ -296,6 +317,245 @@ const aiToolCards = [
   { name: 'Qwen Code', logo: 'qwen.svg' },
   { name: '你的企业 AI 客户端', enterprise: true },
 ]
+
+const CLIENT_CONNECTION_DOT_GAP_PX = 10
+const CLIENT_CONNECTION_JUNCTION_BLEND = 0.56
+
+const CLIENT_CONNECTION_ROUTING_FALLBACK = {
+  viewBox: '0 0 100 100',
+  pathSize: { width: 100, height: 100 },
+  stem: 'M 94 50 H 44',
+  branches: ['M 44 50 C 28 50, 22 30, 6 30', 'M 44 50 C 28 50, 22 70, 6 70'],
+  clients: [
+    { x: 6, y: 30 },
+    { x: 6, y: 70 },
+  ],
+  source: { x: 94, y: 50 },
+  junction: { x: 44, y: 50 },
+}
+
+function clientConnectionBranchPath(from, to) {
+  const deltaX = to.x - from.x
+  const controlOneX = from.x + deltaX * 0.38
+  const controlTwoX = to.x - deltaX * 0.16
+
+  return `M ${from.x} ${from.y} C ${controlOneX} ${from.y}, ${controlTwoX} ${to.y}, ${to.x} ${to.y}`
+}
+
+function clientConnectionAnchorStyle(point) {
+  return {
+    left: `${point.x}px`,
+    top: `${point.y}px`,
+  }
+}
+
+function clientConnectionCenterY(rect) {
+  return rect.top + rect.height / 2
+}
+
+function ClientConnectionCanvas() {
+  const canvasRef = useRef(null)
+  const routingKeyRef = useRef('')
+  const [routing, setRouting] = useState(CLIENT_CONNECTION_ROUTING_FALLBACK)
+
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current
+
+    if (!canvas) {
+      return undefined
+    }
+
+    let frameId = 0
+
+    const measure = () => {
+      if (window.matchMedia('(max-width: 720px)').matches) {
+        return
+      }
+
+      const pathLayer = canvas.querySelector('.client-connection__path')
+      if (!pathLayer) {
+        return
+      }
+
+      const bounds = pathLayer.getBoundingClientRect()
+      if (bounds.width < 8 || bounds.height < 8) {
+        return
+      }
+
+      const toLocalPoint = (clientX, clientY) => ({
+        x: clientX - bounds.left,
+        y: clientY - bounds.top,
+      })
+
+      const groups = canvas.querySelectorAll('.client-connection__group')
+      const knowledge = canvas.querySelector('.client-connection__knowledge')
+
+      if (groups.length < 2 || !knowledge) {
+        return
+      }
+
+      const clients = [...groups].map((group) => {
+        const rect = group.getBoundingClientRect()
+        return toLocalPoint(
+          rect.right + CLIENT_CONNECTION_DOT_GAP_PX,
+          clientConnectionCenterY(rect),
+        )
+      })
+
+      const knowledgeRect = knowledge.getBoundingClientRect()
+      const source = toLocalPoint(
+        knowledgeRect.left - CLIENT_CONNECTION_DOT_GAP_PX,
+        clientConnectionCenterY(knowledgeRect),
+      )
+
+      const format = (value) => Math.round(value * 100) / 100
+
+      const formattedClients = clients.map((client) => ({
+        x: format(client.x),
+        y: format(client.y),
+      }))
+      const formattedSource = {
+        x: format(source.x),
+        y: format(source.y),
+      }
+
+      const clientAnchorX = formattedClients.reduce(
+        (maxX, client) => Math.max(maxX, client.x),
+        formattedClients[0]?.x ?? 0,
+      )
+      const formattedJunction = {
+        x: format(
+          clientAnchorX + (formattedSource.x - clientAnchorX) * CLIENT_CONNECTION_JUNCTION_BLEND,
+        ),
+        y: formattedSource.y,
+      }
+
+      const pathWidth = format(bounds.width)
+      const pathHeight = format(bounds.height)
+
+      const routingKey = [
+        pathWidth,
+        pathHeight,
+        formattedSource.x,
+        formattedSource.y,
+        formattedJunction.x,
+        formattedJunction.y,
+        ...formattedClients.flatMap((client) => [client.x, client.y]),
+      ].join('|')
+
+      if (routingKey === routingKeyRef.current) {
+        return
+      }
+
+      routingKeyRef.current = routingKey
+
+      setRouting({
+        viewBox: `0 0 ${pathWidth} ${pathHeight}`,
+        pathSize: { width: pathWidth, height: pathHeight },
+        stem: `M ${formattedSource.x} ${formattedSource.y} H ${formattedJunction.x}`,
+        branches: formattedClients.map((client) =>
+          clientConnectionBranchPath(formattedJunction, client),
+        ),
+        clients: formattedClients,
+        source: formattedSource,
+        junction: formattedJunction,
+      })
+    }
+
+    const scheduleMeasure = () => {
+      window.cancelAnimationFrame(frameId)
+      frameId = window.requestAnimationFrame(measure)
+    }
+
+    scheduleMeasure()
+
+    const resizeObserver = new ResizeObserver(scheduleMeasure)
+    resizeObserver.observe(canvas)
+
+    const pathLayer = canvas.querySelector('.client-connection__path')
+    if (pathLayer) {
+      resizeObserver.observe(pathLayer)
+    }
+
+    canvas.querySelectorAll('.client-connection__group, .client-connection__knowledge').forEach((node) => {
+      resizeObserver.observe(node)
+    })
+
+    window.addEventListener('resize', scheduleMeasure)
+    document.fonts?.ready.then(scheduleMeasure)
+
+    const delayedMeasure = window.setTimeout(scheduleMeasure, 120)
+
+    return () => {
+      resizeObserver.disconnect()
+      window.removeEventListener('resize', scheduleMeasure)
+      window.clearTimeout(delayedMeasure)
+      window.cancelAnimationFrame(frameId)
+    }
+  }, [])
+
+  return (
+    <div className="client-connection" ref={canvasRef}>
+      <div className="client-connection__path" aria-hidden="true">
+        <svg viewBox={routing.viewBox} preserveAspectRatio="none">
+          <path className="client-connection__path-stem" d={routing.stem} />
+          {routing.branches.map((branch, index) => (
+            <path className="client-connection__path-branch" d={branch} key={index} />
+          ))}
+        </svg>
+        <>
+          {routing.clients.map((dot, index) => (
+            <span
+              className="client-connection__path-dot"
+              key={index}
+              style={clientConnectionAnchorStyle(dot)}
+            />
+          ))}
+          <span
+            className="client-connection__path-dot client-connection__path-dot--junction"
+            style={clientConnectionAnchorStyle(routing.junction)}
+          />
+          <span
+            className="client-connection__path-dot client-connection__path-dot--source"
+            style={clientConnectionAnchorStyle(routing.source)}
+          />
+        </>
+      </div>
+
+      <div className="client-connection__endpoints">
+        {aiClients.map((group, index) => (
+          <article className="client-connection__group" key={group.label}>
+            <div className="client-connection__group-head">
+              <span>0{index + 1}</span>
+              <p>{group.label}</p>
+            </div>
+            <ul>
+              {group.items.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+
+      <div className="client-connection__knowledge">
+        <div className="client-connection__knowledge-head">
+          <span className="client-connection__knowledge-mark">
+            <BrandMark />
+          </span>
+          <small>{BRAND.name.toUpperCase()} / KNOWLEDGE</small>
+        </div>
+        <strong>企业自己的知识</strong>
+        <p>不因 AI 更换而迁移，继续被不同的 AI 使用。</p>
+        <div className="client-connection__knowledge-footer" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function Arrow({ size = 17 }) {
   return (
@@ -1427,7 +1687,6 @@ function HomePage({ navigate }) {
         <div className="hero-cross hero-cross--two" />
         <HeroParticles />
         <div className="hero-content">
-          <SectionLabel>SCALE UP KNOWLEDGE THROUGH USE</SectionLabel>
           <HeroTitle />
           <p className="hero-copy">
             知识不出企业的门，资产越用越厚。
@@ -1458,62 +1717,120 @@ function HomePage({ navigate }) {
         </a>
       </section>
 
-      <section className="manifesto" id="capabilities">
-        <ScrollReveal className="manifesto-heading" revealEarly>
-          <SectionLabel>THE KNOWVEIL WAY</SectionLabel>
-          <h2>
-            为企业提供在<span className="manifesto-em">私有化环境</span>下
-            <br />
-            高效<span className="manifesto-em">沉淀</span>和
-            <span className="manifesto-em">使用</span>知识资产的专业工具
-            <br />
-            探索业务管理与实践的更多可能。
-          </h2>
-        </ScrollReveal>
-        <ScrollReveal className="manifesto-side" delay={180}>
-          <p>
-            模型会换、会过期。KnowVeil 经营的是两样不会过期的东西：企业知道什么，以及企业会做什么。
-          </p>
-          <a className="text-action text-action--line" href="#private-ai">
-            了解私有化部署
-            <Arrow size={15} />
-          </a>
-        </ScrollReveal>
-        <div className="asset-strip">
-          <ScrollReveal delay={0}>
-            <span>01</span>
-            <strong>私有知识</strong>
-            <p>放在自己机器上的底账，随时翻得到</p>
+      <section className="manifesto" id="capabilities" aria-labelledby="manifesto-title">
+        <div className="manifesto__intro">
+          <ScrollReveal className="manifesto-heading" revealEarly>
+            <h2 id="manifesto-title">
+              为企业提供在<span className="manifesto-em">私有化环境</span>下
+              <span>沉淀和使用知识资产的专业工具。</span>
+            </h2>
           </ScrollReveal>
-          <ScrollReveal delay={90}>
-            <span>02</span>
-            <strong>AI 能力</strong>
-            <p>经审查再分发，版本不可变</p>
+          <ScrollReveal className="manifesto-side" delay={180}>
+            <p>
+              模型会换、会过期。{BRAND.name} 经营的是两样不会过期的东西：企业知道什么，以及企业会做什么。
+            </p>
+            <a className="text-action text-action--line" href="#private-ai">
+              了解私有化部署
+              <Arrow size={15} />
+            </a>
           </ScrollReveal>
-          <ScrollReveal delay={180}>
-            <span>03</span>
-            <strong>组织资产</strong>
-            <p>模型换代，这两样都还在</p>
-          </ScrollReveal>
+        </div>
+
+        <div className="manifesto-flow">
+          <div className="manifesto-flow__grid" aria-hidden="true" />
+          <div className="manifesto-flow__origin">
+            <span className="manifesto-flow__origin-mark">
+              <BrandMark />
+            </span>
+            <div>
+              <small>{BRAND.name.toUpperCase()}</small>
+              <strong>企业自己的边界</strong>
+            </div>
+          </div>
+          <ol className="manifesto-flow__assets">
+            {manifestoAssets.map((asset, index) => (
+              <ScrollReveal
+                as="li"
+                className={`manifesto-flow__asset manifesto-flow__asset--${asset.label.toLowerCase()}`}
+                delay={120 + index * 90}
+                key={asset.number}
+              >
+                <div className="manifesto-flow__asset-top">
+                  <span>{asset.number}</span>
+                  <small>{asset.label}</small>
+                </div>
+                <strong>{asset.title}</strong>
+                <p>{asset.text}</p>
+              </ScrollReveal>
+            ))}
+          </ol>
         </div>
       </section>
 
-      <section className="shared-section" id="same-source">
-        <div className="shared-intro">
-          <ScrollReveal className="shared-intro__heading" revealEarly>
-            <SectionLabel>CHECK IT YOURSELF</SectionLabel>
-            <h2>
-              AI 答得对不对，
-              <span>你随时能查。</span>
-            </h2>
-          </ScrollReveal>
-          <ScrollReveal as="p" delay={120}>
-            大多数知识库只给你一个答案，不告诉你它依据什么。Knode 把依据一并交出来：用了哪几份资料、出自原文哪里，由你自己判断。
+      <section className="shared-section" id="same-source" aria-labelledby="shared-title">
+        <div className="shared-section__top">
+          <div className="shared-intro">
+            <ScrollReveal className="shared-intro__heading" revealEarly>
+              <h2 id="shared-title">
+                AI 答得对不对，
+                <span>你随时能查。</span>
+              </h2>
+            </ScrollReveal>
+            <ScrollReveal as="p" delay={120}>
+              大多数知识库只给你一个答案，不告诉你它依据什么。{PRODUCTS.knode.name} 把依据一并交出来：用了哪几份资料、出自原文哪里，由你自己判断。
+            </ScrollReveal>
+          </div>
+
+          <ScrollReveal className="shared-proof" delay={180}>
+            <div className="shared-proof__grid" aria-hidden="true" />
+            <article className="shared-proof__answer">
+              <div className="shared-proof__answer-top">
+                <span>AI 的回答</span>
+                <small>可核对</small>
+              </div>
+              <p>
+                每个结论，
+                <mark>都有原文可以回去看。</mark>
+              </p>
+              <div className="shared-proof__answer-lines" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </div>
+            </article>
+
+            <ol className="shared-proof__sources">
+              <li>
+                <span>01</span>
+                <div>
+                  <strong>原文依据</strong>
+                  <small>对应章节</small>
+                </div>
+                <i />
+              </li>
+              <li>
+                <span>02</span>
+                <div>
+                  <strong>相关资料</strong>
+                  <small>清楚列出</small>
+                </div>
+                <i />
+              </li>
+              <li>
+                <span>03</span>
+                <div>
+                  <strong>修改入口</strong>
+                  <small>原处可改</small>
+                </div>
+                <i />
+              </li>
+            </ol>
           </ScrollReveal>
         </div>
-        <div className="shared-list">
+
+        <ol className="shared-points">
           {sharedPoints.map((point, index) => (
-            <ScrollReveal as="article" delay={180 + index * 70} key={point.number}>
+            <ScrollReveal as="li" delay={180 + index * 70} key={point.number}>
               <span>{point.number}</span>
               <div>
                 <h3>{point.title}</h3>
@@ -1521,16 +1838,15 @@ function HomePage({ navigate }) {
               </div>
             </ScrollReveal>
           ))}
-          <ScrollReveal as="p" className="shared-note" delay={180}>
-            取舍也说清楚：如果只是要「大概那个意思也能搜到」，那不是我们擅长的方向。我们要的是「这一条到底对不对」——在需要担责的场景里，后者更值钱。
-          </ScrollReveal>
-        </div>
+        </ol>
+        <ScrollReveal as="p" className="shared-note" delay={180}>
+          取舍也说清楚：如果只是要「大概那个意思也能搜到」，那不是我们擅长的方向。我们要的是「这一条到底对不对」——在需要担责的场景里，后者更值钱。
+        </ScrollReveal>
       </section>
 
       <section className="products-section" id="products">
         <div className="section-head">
           <ScrollReveal className="section-head__title" revealEarly>
-            <SectionLabel>PRODUCTS</SectionLabel>
             <h2>两个产品，一套企业私有 AI 的底座。</h2>
           </ScrollReveal>
           <ScrollReveal as="p" delay={120}>一个让知识进得来、出不去；一个让能力出得去、回得来。</ScrollReveal>
@@ -1550,7 +1866,6 @@ function HomePage({ navigate }) {
       <section className="journey-section">
         <div className="journey-intro">
           <ScrollReveal className="journey-intro__heading" revealEarly>
-            <SectionLabel>USE MAKES IT GROW</SectionLabel>
             <h2>
               每一次使用，
               <span>都在加厚这份资产。</span>
@@ -1617,69 +1932,52 @@ function HomePage({ navigate }) {
         </div>
       </section>
 
-      <section className="client-band" id="clients">
-        <div className="client-band__intro">
-          <ScrollReveal revealEarly>
-            <SectionLabel>YOUR AI, NOT OURS</SectionLabel>
-            <h2>
-              不管是哪一款 AI，
-              <span>知识都不用搬家。</span>
-            </h2>
-          </ScrollReveal>
-        </div>
-        <div className="client-band__body">
-          {aiClients.map((group, index) => (
-            <ScrollReveal className="client-group" delay={180 + index * 90} key={group.label}>
-              <p className="client-group__label">{group.label}</p>
-              <ul>
-                {group.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
+      <section className="client-band" id="clients" aria-labelledby="clients-title">
+        <div className="client-band__top">
+          <div className="client-band__intro">
+            <ScrollReveal revealEarly>
+              <h2 id="clients-title">
+                不管是哪一款 AI，
+                <span>知识都不用搬家。</span>
+              </h2>
             </ScrollReveal>
-          ))}
-          <ScrollReveal as="p" delay={180}>
+          </div>
+          <ScrollReveal as="p" className="client-band__lead" delay={120}>
             接入方式遵循通用的开放标准，所以新出的客户端、或者企业自己搭的 AI，都不必等我们做适配。工具的寿命，不该决定知识资产的寿命。
           </ScrollReveal>
         </div>
+
+        <ClientConnectionCanvas />
       </section>
 
-      <section className="private-section" id="private-ai">
-        <div className="private-intro">
-          <ScrollReveal className="private-intro__heading" revealEarly>
-            <SectionLabel>PRIVATE BY DESIGN</SectionLabel>
-            <h2>
-              AI 的价值，
-              <span>始于可控。</span>
-            </h2>
-          </ScrollReveal>
-          <ScrollReveal as="p" delay={120}>
-            真实的企业 AI，不该以牺牲数据边界为代价。KnowVeil 让安全不是一个附加项，而是产品的形状本身。
-          </ScrollReveal>
-          <ScrollReveal className="private-seal" delay={180}>
-            <BrandMark />
-            <span>PRIVATE AI<br />FOR ENTERPRISE</span>
-          </ScrollReveal>
-        </div>
-        <div className="private-list">
-          {privatePoints.map((point, index) => (
-            <ScrollReveal as="article" delay={180 + index * 70} key={point.number}>
-              <span>{point.number}</span>
-              <div>
+      <section className="private-section" id="private-ai" aria-labelledby="private-title">
+        <div className="private-section__top">
+          <div className="private-intro">
+            <ScrollReveal className="private-intro__heading" revealEarly>
+              <h2 id="private-title">
+                AI 的价值，
+                <span>始于可控。</span>
+              </h2>
+            </ScrollReveal>
+            <ScrollReveal as="p" delay={120}>
+              真实的企业 AI，不该以牺牲数据边界为代价。{BRAND.name} 让安全不是一个附加项，而是产品的形状本身。
+            </ScrollReveal>
+          </div>
+
+          <ol className="private-points">
+            {privatePoints.map((point, index) => (
+              <ScrollReveal as="li" delay={180 + index * 70} key={point.number}>
                 <h3>{point.title}</h3>
                 <p>{point.text}</p>
-              </div>
-            </ScrollReveal>
-          ))}
+              </ScrollReveal>
+            ))}
+          </ol>
         </div>
       </section>
 
       <section className="contact-section" id="contact">
         <div className="contact-orbit contact-orbit--one" />
         <div className="contact-orbit contact-orbit--two" />
-        <ScrollReveal revealEarly>
-          <SectionLabel>START WITH ONE REAL SCENARIO</SectionLabel>
-        </ScrollReveal>
         <ScrollReveal as="h2" delay={80} revealEarly>
           让下一次业务经验，
           <span>成为全组织的能力。</span>
@@ -1827,7 +2125,6 @@ function ProductDetailPage({ product }) {
 
       <section className="product-detail-capabilities" id="product-capabilities">
         <div className="product-detail-capabilities__head">
-          <SectionLabel>WHAT IT ENABLES</SectionLabel>
           <h2>
             让 {product.name} 成为
             <span>企业私有 AI 的一块基石。</span>
@@ -1876,7 +2173,6 @@ function ProductDetailPage({ product }) {
           <div className="product-workflow__inner">
             <div className="product-workflow__top">
               <div className="product-workflow__intro">
-                <SectionLabel>HOW IT WORKS</SectionLabel>
                 <h2>
                   从一个 Skill 包，
                   <span>到一项可用能力。</span>
@@ -1916,7 +2212,6 @@ function ProductDetailPage({ product }) {
         ) : (
           <>
             <div className="product-workflow__intro">
-              <SectionLabel>HOW IT WORKS</SectionLabel>
               <h2>
                 从第一份资料，
                 <span>到第一项可用能力。</span>
@@ -2033,7 +2328,6 @@ function DocsPage() {
   return (
     <main className="docs-page">
       <section className="docs-hero">
-        <SectionLabel>KNOWVEIL DOCUMENTATION</SectionLabel>
         <h1>
           从了解产品，
           <span>到构建企业 AI 能力。</span>
@@ -2048,7 +2342,6 @@ function DocsPage() {
 
       <section className="docs-index">
         <div className="docs-index__intro">
-          <SectionLabel>EXPLORE</SectionLabel>
           <h2>从最需要的内容开始。</h2>
         </div>
         <div className="docs-grid">
@@ -2073,7 +2366,6 @@ function DocsPage() {
 
       <section className="docs-help">
         <div>
-          <SectionLabel>NEED HELP?</SectionLabel>
           <h2>找不到需要的内容？</h2>
         </div>
         <a className="button button--dark" href={`mailto:${BRAND.email}?subject=KnowVeil%20文档咨询`}>
