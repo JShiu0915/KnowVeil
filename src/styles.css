@@ -3601,8 +3601,10 @@ button:focus-visible {
   }
 }
 
+/* 不参与滚动锚定：Chrome 刷新时按锚点元素恢复位置，入场前的 32px 位移会让页面每刷新一次下移 32px */
 .scroll-reveal {
   opacity: 0;
+  overflow-anchor: none;
   transform: translateY(32px);
   transition:
     opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1) var(--scroll-reveal-delay, 0ms),
