@@ -816,11 +816,9 @@ button {
 .section-head__title {
   display: flex;
   width: 100%;
-  flex-flow: row wrap;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  column-gap: clamp(14px, 2vw, 22px);
-  row-gap: 10px;
+  gap: clamp(20px, 2.5vw, 28px);
 }
 
 .section-head h2 {
@@ -831,7 +829,7 @@ button {
   white-space: nowrap;
 }
 
-.section-head > p {
+.section-head__title p {
   max-width: min(420px, 100%);
   margin: 0;
   color: #666660;
@@ -1591,6 +1589,42 @@ button {
   column-gap: clamp(56px, 8vw, 128px);
 }
 
+.private-section__top.scroll-reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.private-section__top.scroll-reveal .private-intro,
+.private-section__top.scroll-reveal .private-points > li {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.private-section__top.scroll-reveal--visible .private-intro,
+.private-section__top.scroll-reveal--visible .private-points > li {
+  opacity: 1;
+  transform: none;
+}
+
+.private-section__top.scroll-reveal--visible .private-intro {
+  transition-delay: 0ms;
+}
+
+.private-section__top.scroll-reveal--visible .private-points > li:nth-child(1) {
+  transition-delay: 90ms;
+}
+
+.private-section__top.scroll-reveal--visible .private-points > li:nth-child(2) {
+  transition-delay: 160ms;
+}
+
+.private-section__top.scroll-reveal--visible .private-points > li:nth-child(3) {
+  transition-delay: 230ms;
+}
+
 .private-intro h2 {
   max-width: 500px;
   font-size: clamp(2.15rem, 3.1vw, 3.1rem);
@@ -1689,12 +1723,19 @@ button {
   color: #bcf687;
 }
 
+.contact-section__intro p,
 .contact-section > p {
   max-width: 490px;
   margin: 22px 0 0;
   color: #aaa9a3;
   font-size: 14px;
   line-height: 1.8;
+}
+
+.contact-section__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .button--light {
@@ -6003,6 +6044,11 @@ button {
   }
 
   .scroll-reveal {
+    transition-delay: 0ms !important;
+  }
+
+  .private-section__top.scroll-reveal--visible .private-intro,
+  .private-section__top.scroll-reveal--visible .private-points > li {
     transition-delay: 0ms !important;
   }
 }
