@@ -2536,7 +2536,7 @@ button:focus-visible {
 }
 
 .skill-hero__product strong {
-  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+  font-size: clamp(2.5rem, 4.5vw, 3.5rem);
   font-weight: 650;
   letter-spacing: -0.025em;
   line-height: 1.1;
