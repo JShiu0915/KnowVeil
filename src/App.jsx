@@ -1,10 +1,17 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { BRAND, PRODUCTS } from './brand'
 
 import HeroParticles from './HeroParticles'
 
+import Phrases from './Phrases'
+
+import { AppLink, publicAsset, useAppRoute } from './router'
+
 import ScrollReveal from './ScrollReveal'
+
+/** 文档页连同 Markdown 解析器单独打包，只在打开文档时加载 */
+const DocsPage = lazy(() => import('./docs/DocsPage'))
 
 const productCards = [
   {
@@ -181,24 +188,6 @@ const productDetails = {
     ],
   },
 }
-
-const documentGroups = [
-  {
-    label: 'GETTING STARTED',
-    title: '开始使用 KnowVeil',
-    items: ['两个产品怎么配合', '部署在哪、谁维护', '接入常用的 AI 客户端'],
-  },
-  {
-    label: 'MYSKILLNAVIGATOR',
-    title: '能力的检查与分发',
-    items: ['一个能力包长什么样', '检查规则与结论含义', '版本、标签与下架'],
-  },
-  {
-    label: 'KNODE',
-    title: '知识底账怎么用',
-    items: ['知识目录怎么组织', '引用的出处怎么核对', '备份、迁移与对外分享'],
-  },
-]
 
 /** 首页按主句的顺序排列：先「温故」，后「知新」 */
 const homeProductOrder = ['knode', 'skill']
@@ -500,91 +489,6 @@ function CursorIcon({ size = 18 }) {
   )
 }
 
-function normalisePath(pathname) {
-  const path = pathname.replace(/\/+$/, '')
-  return path || '/'
-}
-
-const BASE_URL = import.meta.env.BASE_URL
-
-function toAppPath(pathname) {
-  const base = BASE_URL.replace(/\/$/, '')
-  let path = pathname
-
-  if (base && (path === base || path.startsWith(`${base}/`))) {
-    path = path.slice(base.length) || '/'
-  }
-
-  return normalisePath(path)
-}
-
-function toHref(appPath) {
-  const path = normalisePath(appPath)
-
-  if (path === '/') {
-    return BASE_URL.endsWith('/') ? BASE_URL : `${BASE_URL}/`
-  }
-
-  const base = BASE_URL.replace(/\/$/, '')
-  return `${base}${path}`
-}
-
-function publicAsset(path) {
-  if (!path) {
-    return ''
-  }
-
-  return `${BASE_URL}${path.replace(/^\//, '')}`
-}
-
-function useAppRoute() {
-  const [path, setPath] = useState(() => toAppPath(window.location.pathname))
-
-  useEffect(() => {
-    const updatePath = () => setPath(toAppPath(window.location.pathname))
-    window.addEventListener('popstate', updatePath)
-    return () => window.removeEventListener('popstate', updatePath)
-  }, [])
-
-  const navigate = (to) => {
-    const target = normalisePath(to)
-    const href = toHref(target)
-
-    if (target !== toAppPath(window.location.pathname)) {
-      window.history.pushState({}, '', href)
-    }
-    setPath(target)
-    window.scrollTo({ top: 0, behavior: 'auto' })
-  }
-
-  return { path, navigate }
-}
-
-function AppLink({ to, navigate, onNavigate, children, ...props }) {
-  const handleClick = (event) => {
-    if (
-      event.defaultPrevented ||
-      event.button !== 0 ||
-      event.metaKey ||
-      event.altKey ||
-      event.ctrlKey ||
-      event.shiftKey
-    ) {
-      return
-    }
-
-    event.preventDefault()
-    navigate(to)
-    onNavigate?.()
-  }
-
-  return (
-    <a href={toHref(to)} onClick={handleClick} {...props}>
-      {children}
-    </a>
-  )
-}
-
 function BrandMark() {
   return (
     <span className="brand-mark" aria-hidden="true">
@@ -816,6 +720,7 @@ function SiteHeader({ path, navigate }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [productsOpen, setProductsOpen] = useState(false)
   const productActive = path.startsWith('/products/')
+  const docsActive = path === '/docs' || path.startsWith('/docs/')
 
   const closeNavigation = () => {
     setMenuOpen(false)
@@ -871,7 +776,7 @@ function SiteHeader({ path, navigate }) {
           </div>
         </div>
         <AppLink
-          className={path === '/docs' ? 'main-nav__link main-nav__link--active' : 'main-nav__link'}
+          className={docsActive ? 'main-nav__link main-nav__link--active' : 'main-nav__link'}
           to="/docs"
           navigate={navigate}
           onNavigate={closeNavigation}
@@ -1100,19 +1005,6 @@ function ContactBand({ title, titleTail, text, consultHref }) {
       </ScrollReveal>
     </section>
   )
-}
-
-/** 窄栏里的短句只在标点后换行 */
-function Phrases({ text }) {
-  return text
-    .replace(/([，；。])/g, '$1\n')
-    .split('\n')
-    .filter(Boolean)
-    .map((phrase) => (
-      <span className="phrase" key={phrase}>
-        {phrase}
-      </span>
-    ))
 }
 
 function SkillScreens() {
@@ -1553,59 +1445,6 @@ function ProductDetailPage({ product }) {
   )
 }
 
-function DocsPage() {
-  return (
-    <main className="docs-page">
-      <section className="docs-hero">
-        <h1>
-          从了解产品，
-          <span>到构建企业 AI 能力。</span>
-        </h1>
-        <p>这里整理了 KnowVeil 的产品说明、部署准备与使用方法，帮助您的团队更快开始。</p>
-        <div className="docs-search" aria-label="文档搜索提示">
-          <span>⌕</span>
-          搜索文档主题
-          <kbd>⌘ K</kbd>
-        </div>
-      </section>
-
-      <section className="docs-index">
-        <div className="docs-index__intro">
-          <h2>从最需要的内容开始。</h2>
-        </div>
-        <div className="docs-grid">
-          {documentGroups.map((group) => (
-            <article key={group.label}>
-              <p>{group.label}</p>
-              <h3>{group.title}</h3>
-              <ul>
-                {group.items.map((item) => (
-                  <li key={item}>
-                    <a href={`mailto:${BRAND.email}?subject=KnowVeil%20文档咨询`}>
-                      {item}
-                      <Arrow size={14} />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="docs-help">
-        <div>
-          <h2>找不到需要的内容？</h2>
-        </div>
-        <a className="button button--dark" href={`mailto:${BRAND.email}?subject=KnowVeil%20文档咨询`}>
-          联系我们
-          <Arrow />
-        </a>
-      </section>
-    </main>
-  )
-}
-
 function SiteFooter({ navigate }) {
   return (
     <footer className="site-footer">
@@ -1642,8 +1481,12 @@ function App() {
     page = <MySkillNavigatorPage product={product} />
   } else if (product) {
     page = <ProductDetailPage product={product} />
-  } else if (path === '/docs') {
-    page = <DocsPage />
+  } else if (path === '/docs' || path.startsWith('/docs/')) {
+    page = (
+      <Suspense fallback={<main className="docs" />}>
+        <DocsPage path={path} navigate={navigate} />
+      </Suspense>
+    )
   }
 
   return (
