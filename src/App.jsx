@@ -1357,14 +1357,14 @@ function SkillFlow() {
                   {submission.previousVersion && (
                     <span className="skill-flow__version skill-flow__version--previous">
                       {submission.previousVersion}
-                      <small aria-hidden="true">现行</small>
+                      <small aria-hidden="true">最新</small>
                     </span>
                   )}
                   <span
                     className={`skill-flow__version skill-flow__version--current skill-flow__version--${submission.verdict}`}
                   >
                     {submission.version}
-                    <small>{submission.verdict === 'pass' ? '现行' : skillVerdicts.review}</small>
+                    <small>{submission.verdict === 'pass' ? '最新' : skillVerdicts.review}</small>
                   </span>
                 </div>
               )}
