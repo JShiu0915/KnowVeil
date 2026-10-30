@@ -79,6 +79,12 @@ const skillScreens = [
   },
 ]
 
+/** 送审示意：提交人展示为「姓 + 职称」 */
+function skillSubmitterLabel({ surname, title }) {
+  if (!surname) return title ?? ''
+  return title ? `${surname}${title}` : surname
+}
+
 /** 需复核的 Skill 仍会出现在检索结果里（带标记），见 Skill 广场截图 */
 const skillSubmissions = [
   {
@@ -87,7 +93,7 @@ const skillSubmissions = [
     version: 'v1.2.0',
     previousVersion: 'v1.1.0',
     team: '法务部',
-    submitter: '陈思远',
+    submitter: { surname: '陈', title: '经理' },
     date: '4 月 2 日',
     checks: [
       { label: '格式', result: '符合要求' },
@@ -102,7 +108,7 @@ const skillSubmissions = [
     name: '经营日报生成',
     version: 'v0.9.0',
     team: '财务部',
-    submitter: '李然',
+    submitter: { surname: '李', title: '会计' },
     date: '3 月 28 日',
     checks: [
       { label: '格式', result: '符合要求' },
@@ -117,7 +123,7 @@ const skillSubmissions = [
     name: '批量导出工具',
     version: 'v2.1.0',
     team: '运营部',
-    submitter: '王蔚',
+    submitter: { surname: '王', title: '主管' },
     date: '3 月 20 日',
     checks: [
       { label: '格式', result: '符合要求' },
@@ -1281,7 +1287,7 @@ function SkillFlow() {
                 </span>
               </div>
               <p className="skill-flow__note">
-                {submission.team} {submission.submitter}，{submission.date}提交
+                {submission.team} {skillSubmitterLabel(submission.submitter)}，{submission.date}提交
               </p>
             </div>
           </li>
