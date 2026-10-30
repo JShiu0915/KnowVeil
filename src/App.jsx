@@ -26,7 +26,7 @@ const productPreviewImages = {
   skill: {
     heroSrc: '/images/products/skillnavigator-hero.webp', // '/images/products/skillnavigator-hero.webp'
     cardSrc: '/images/products/skillnavigator-card.webp', // '/images/products/skillnavigator-card.webp'
-    alt: 'SkillNavigator 产品界面截图',
+    alt: `${PRODUCTS.skill.name} 产品界面截图`,
     heroFile: 'public/images/products/skillnavigator-hero.webp',
     cardFile: 'public/images/products/skillnavigator-card.webp',
   },
@@ -50,7 +50,7 @@ const skillScreens = [
   {
     id: 'home',
     name: '首页',
-    src: '/images/products/skillnavigator-hero.webp',
+    src: '/images/products/myskillnavigator-hero.webp',
     text: '同事从这里查找公开的 Skill，也从这里发布自己的。',
   },
   {
@@ -189,7 +189,7 @@ const documentGroups = [
     items: ['两个产品怎么配合', '部署在哪、谁维护', '接入常用的 AI 客户端'],
   },
   {
-    label: 'SKILLNAVIGATOR',
+    label: 'MYSKILLNAVIGATOR',
     title: '能力的检查与分发',
     items: ['一个能力包长什么样', '检查规则与结论含义', '版本、标签与下架'],
   },
@@ -1389,7 +1389,7 @@ function SkillFlow() {
   )
 }
 
-function SkillNavigatorPage({ product }) {
+function MySkillNavigatorPage({ product }) {
   const consultHref = `mailto:${BRAND.email}?subject=${encodeURIComponent(`${product.name} 方案咨询`)}`
   const claim = PRODUCTS.skill.line.replace(/，/g, '，\n').split('\n')
 
@@ -1639,7 +1639,7 @@ function App() {
   let page = <HomePage navigate={navigate} />
 
   if (product?.type === 'skill') {
-    page = <SkillNavigatorPage product={product} />
+    page = <MySkillNavigatorPage product={product} />
   } else if (product) {
     page = <ProductDetailPage product={product} />
   } else if (path === '/docs') {

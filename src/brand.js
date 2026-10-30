@@ -19,7 +19,7 @@ export const BRAND = {
 /** motto：产品在主句「让 AI 温故，让组织知新」里承担的那一半 */
 export const PRODUCTS = {
   skill: {
-    name: 'SkillNavigator',
+    name: 'MySkillNavigator',
     kind: 'Skill 的审查与分发',
     motto: '知新',
     line: '让每一个进入企业的 AI 能力，都有出处、有审查、有记录。',

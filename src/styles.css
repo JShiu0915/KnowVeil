@@ -2520,7 +2520,7 @@ button:focus-visible {
   font-size: 13px;
 }
 
-/* ---------------- SkillNavigator ---------------- */
+/* ---------------- MySkillNavigator ---------------- */
 
 .skill-hero {
   width: min(1200px, calc(100% - 80px));
