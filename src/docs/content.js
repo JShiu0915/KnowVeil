@@ -12,7 +12,7 @@ const sources = import.meta.glob('./pages/*.md', { query: '?raw', import: 'defau
  * - 开头 frontmatter：title、summary、updated；第一组的第一篇就是 /docs
  * - 正文从 ## 开始，## 自动编号并列进「本页内容」；写成 `## 标题 {#anchor}` 可固定这一节的链接
  * - 提示框：> [!NOTE]、> [!TIP]、> [!WARNING]；> [!TODO] 写给作者，只在本地开发时显示，线上显示「还在整理」
- * - 品牌词写 {{brand}}、{{knode}}、{{skill}}；单独一行 {{contents}} 插入全部文档列表
+ * - 品牌词写 {{brand}}、{{knode}}、{{skill}}、{{knodeLine}}、{{skillLine}}；单独一行 {{contents}} 插入全部文档列表
  * - 站内链接写 /docs/xxx 或 /docs/xxx#anchor，图片放 public/ 下，写 /images/xxx
  */
 const outline = [
@@ -36,8 +36,10 @@ const brandTokens = {
   email: BRAND.email,
   knode: PRODUCTS.knode.name,
   knodeKind: PRODUCTS.knode.kind,
+  knodeLine: PRODUCTS.knode.line,
   skill: PRODUCTS.skill.name,
   skillKind: PRODUCTS.skill.kind,
+  skillLine: PRODUCTS.skill.line,
 }
 
 const calloutTypes = ['NOTE', 'TIP', 'WARNING', 'TODO']
