@@ -24,11 +24,11 @@ const productCards = [
 /** 产品截图：将文件放入 public/images/products/ 后，取消对应 heroSrc / cardSrc 的注释即可 */
 const productPreviewImages = {
   skill: {
-    heroSrc: '/images/products/skillnavigator-hero.webp', // '/images/products/skillnavigator-hero.webp'
-    cardSrc: '/images/products/skillnavigator-card.webp', // '/images/products/skillnavigator-card.webp'
+    heroSrc: '/images/products/myskillnavigator-hero.webp', // '/images/products/myskillnavigator-hero.webp'
+    cardSrc: '/images/products/myskillnavigator-card.webp', // '/images/products/myskillnavigator-card.webp'
     alt: `${PRODUCTS.skill.name} 产品界面截图`,
-    heroFile: 'public/images/products/skillnavigator-hero.webp',
-    cardFile: 'public/images/products/skillnavigator-card.webp',
+    heroFile: 'public/images/products/myskillnavigator-hero.webp',
+    cardFile: 'public/images/products/myskillnavigator-card.webp',
   },
   knode: {
     heroSrc: '', // '/images/products/knode-hero.webp'
