@@ -1392,7 +1392,6 @@ function SkillNavigatorPage({ product }) {
       <section className="skill-hero" aria-labelledby="skill-hero-title">
         <ScrollReveal as="p" className="skill-hero__product">
           <strong>{product.name}</strong>
-          <span>{PRODUCTS.skill.kind}</span>
         </ScrollReveal>
         <div className="skill-hero__lead">
           <ScrollReveal as="h1" className="skill-hero__claim" id="skill-hero-title" delay={80}>
