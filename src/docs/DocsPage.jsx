@@ -154,7 +154,7 @@ function DocToc({ doc, activeId }) {
         </>
       )}
       <a className="docs-toc__feedback" href={feedbackHref}>
-        这一页有问题？写信告诉我们
+        这一页有问题？写邮件告诉我们
       </a>
     </nav>
   )

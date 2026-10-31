@@ -168,7 +168,7 @@ function Callout({ token }) {
   if (type === 'TODO' && !import.meta.env.DEV) {
     return (
       <p className="doc-pending">
-        这一节还在整理。需要这部分内容，可以写信问我们：
+        这一节还在整理。需要这部分内容，可以写邮件问我们：
         <a href={`mailto:${BRAND.email}`}>{BRAND.email}</a>
       </p>
     )
