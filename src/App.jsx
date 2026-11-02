@@ -645,13 +645,13 @@ function ProductSketch({ type }) {
             <span>修改时间</span>
           </div>
           {[
-            ['尽调工作清单（2025 修订）', '王蔚', '3 天前'],
-            ['合同审查要点', '陈思远', '上周'],
-            ['股权变更核查底稿', '李然', '上个月'],
+            ['尽调工作清单（2025 修订）', { surname: '王', title: '经理' }, '3 天前'],
+            ['合同审查要点', { surname: '陈', title: '经理' }, '上周'],
+            ['股权变更核查底稿', { surname: '李', title: '专员' }, '上个月'],
           ].map(([file, editor, time]) => (
             <div className="knode-window__row" key={file}>
               <span>{file}</span>
-              <span>{editor}</span>
+              <span>{skillSubmitterLabel(editor)}</span>
               <span>{time}</span>
             </div>
           ))}
