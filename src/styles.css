@@ -1555,12 +1555,17 @@ button:focus-visible {
 .home-hero h1 {
   margin: 0;
   color: var(--ink);
-  font-family: var(--font-song);
-  font-size: clamp(3rem, 6.4vw, 6.25rem);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  line-height: 1.16;
+  font-family: var(--font-sans);
+  font-size: clamp(3rem, 5.6vw, 5.85rem);
+  font-weight: 610;
+  letter-spacing: -0.092em;
+  line-height: 1.04;
   white-space: nowrap;
+}
+
+/* 尾段「让组织知新」维持品牌绿 */
+.home-hero h1 > span:last-child {
+  color: var(--jade);
 }
 
 .home-hero__promise {
